@@ -17,12 +17,12 @@ namespace Enterprise_Computing_Lab_4
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //if loading page for the first time, populate the department grid, if not don't repopulate
+            // If loading page for the first time, populate the department grid, if not don't repopulate
             if (!IsPostBack)
             {
-                Session["SortColumn"] = "DepartmentID"; //default sort column
-                Session["SortDirection"] = "ASC"; // default sort direction
-                //get the Department data
+                Session["SortColumn"] = "DepartmentID"; // Default sort column
+                Session["SortDirection"] = "ASC"; // Default sort direction
+                // Get the Department data
                 this.GetDepartments();
             }
         }
@@ -36,14 +36,14 @@ namespace Enterprise_Computing_Lab_4
          * */
         protected void GetDepartments()
         {
-            //connect to EF
+            // Connect to EF
             using (DefaultConnection db = new DefaultConnection())
             {
                 string SortString = Session["SortColumn"].ToString() + " " + Session["SortDirection"].ToString();
-                //query the departments table using EF and LINQ
+                // Query the departments table using EF and LINQ
                 var Departments = (from allDepartments in db.Departments select allDepartments);
 
-                //bind results to gridview
+                // Bind results to gridview
                 DepartmentsGridView.DataSource = Departments.AsQueryable().OrderBy(SortString).ToList();
                 DepartmentsGridView.DataBind();
             }
@@ -60,10 +60,10 @@ namespace Enterprise_Computing_Lab_4
          * */
         protected void PageSizeDropDownList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //set the new page size
+            // Set the new page size
             DepartmentsGridView.PageSize = Convert.ToInt32(PageSizeDropDownList.SelectedValue);
 
-            //refresh
+            // Refresh
             this.GetDepartments();
         }
 
@@ -81,7 +81,7 @@ namespace Enterprise_Computing_Lab_4
             //Set the new page number
             DepartmentsGridView.PageIndex = e.NewPageIndex;
 
-            //refresh the grid
+            // Refresh the grid
             this.GetDepartments();
         }
 
@@ -96,27 +96,27 @@ namespace Enterprise_Computing_Lab_4
          * */
         protected void DepartmentsGridView_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
-            //store which row was clicked
+            // Store which row was clicked
             int selectedRow = e.RowIndex;
 
-            //get the selected DepartmentID using the grids datakey collection
+            // Get the selected DepartmentID using the grids datakey collection
             int DepartmentID = Convert.ToInt32(DepartmentsGridView.DataKeys[selectedRow].Values["DepartmentID"]);
 
-            //use ef to find the selelcted Department and delete it
+            // Use ef to find the selelcted Department and delete it
             using (DefaultConnection db = new DefaultConnection())
             {
-                //create object of the department class and store the query string inside of it
+                // Create object of the department class and store the query string inside of it
                 Department deletedDepartment = (from departmentRecords in db.Departments
                                                 where departmentRecords.DepartmentID == DepartmentID
                                                 select departmentRecords).FirstOrDefault();
 
-                //remove the selected department from the db
+                // Remove the selected department from the db
                 db.Departments.Remove(deletedDepartment);
 
-                //save db changes
+                // Save db changes
                 db.SaveChanges();
 
-                //refresh gridview
+                // Refresh gridview
                 this.GetDepartments();
 
             }
@@ -132,13 +132,13 @@ namespace Enterprise_Computing_Lab_4
          * */
         protected void DepartmentsGridView_Sorting(object sender, GridViewSortEventArgs e)
         {
-            // get the column to sort by
+            // Get the column to sort by
             Session["SortColumn"] = e.SortExpression;
 
-            //refresh the grid
+            // Refresh the grid
             this.GetDepartments();
 
-            //toggle the direction from ASC and DSC
+            // Toggle the direction from ASC and DSC
             Session["SortDirection"] = Session["SortDirection"].ToString() == "ASC" ? "DSC" : "ASC";
         }
 
@@ -155,7 +155,7 @@ namespace Enterprise_Computing_Lab_4
         {
             if (IsPostBack)
             {
-                if (e.Row.RowType == DataControlRowType.Header)//if header row is clicked
+                if (e.Row.RowType == DataControlRowType.Header)// If header row is clicked
                 {
                     LinkButton linkButton = new LinkButton();
 

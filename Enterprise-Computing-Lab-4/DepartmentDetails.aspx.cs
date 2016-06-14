@@ -24,18 +24,18 @@ namespace Enterprise_Computing_Lab_4
 
         protected void GetDepartment()
         {
-            // populate teh form with existing data from the database
+            // Populate the form with existing data from the database
             int DepartmentID = Convert.ToInt32(Request.QueryString["DepartmentID"]);
 
-            // connect to the EF DB
+            // Connect to the EF DB
             using (DefaultConnection db = new DefaultConnection())
             {
-                // populate a department object instance with the DepartmentID from the URL Parameter
+                // Populate a department object instance with the DepartmentID from the URL Parameter
                 Department updatedDepartment = (from department in db.Departments
                                                 where department.DepartmentID == DepartmentID
                                                 select department).FirstOrDefault();
 
-                // map the department properties to the form controls
+                // Map the department properties to the form controls
                 if (updatedDepartment != null)
                 {
                     DepartmentNameTextBox.Text = updatedDepartment.Name;
@@ -51,28 +51,28 @@ namespace Enterprise_Computing_Lab_4
             // Use EF to connect to the server
             using (DefaultConnection db = new DefaultConnection())
             {
-                // use the Departments model to create a new department object and
-                // save a new record
+                // Use the Departments model to create a new department object and
+                // Save a new record
                 Department newDepartment = new Department();
 
                 int DepartmentID = 0;
 
-                if (Request.QueryString.Count > 0) // our URL has a DepartmentID in it
+                if (Request.QueryString.Count > 0) // URL has a DepartmentID in it
                 {
-                    // get the id from the URL
+                    // Get the id from the URL
                     DepartmentID = Convert.ToInt32(Request.QueryString["DepartmentID"]);
 
-                    // get the current student from EF DB
+                    // Get the current student from EF DB
                     newDepartment = (from department in db.Departments
                                      where department.DepartmentID == DepartmentID
                                      select department).FirstOrDefault();
                 }
 
-                // add form data to the new department record
+                // Add form data to the new department record
                 newDepartment.Name = DepartmentNameTextBox.Text;
                 newDepartment.Budget = Convert.ToDecimal(BudgetTextBox.Text);
 
-                // use LINQ to ADO.NET to add / insert new department into the database
+                // Use LINQ to ADO.NET to add / insert new department into the database
 
                 if (DepartmentID == 0)
                 {
@@ -80,7 +80,7 @@ namespace Enterprise_Computing_Lab_4
                 }
 
 
-                // save our changes - also updates and inserts
+                // Save changes - also updates and inserts
                 db.SaveChanges();
 
                 // Redirect back to the updated departments page
